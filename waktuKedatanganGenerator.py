@@ -1,5 +1,7 @@
 import numpy as np
 import tabulate
+from openpyxl import Workbook
+from openpyxl.styles import Alignment
 
 class generator :
 
@@ -15,7 +17,7 @@ class generator :
     def generateData(self):
 
         for i in range(101):
-            if i == 0:
+            if i == 1:
                 self.x[i] = self.seed
             else :
                 self.x[i] = ((self.x[i-1] * self.a) + self.c) % self.m
@@ -25,22 +27,43 @@ class generator :
         self.U = np.around(self.U, decimals=2)
         self.data = self.data.astype(dtype=int)
 
+        self.x = self.x[1:]
+        self.U = self.U[1:]
+        self.data = self.data[1:]
+
         return self.x, self.U, self.data
 
-    def showTabelWaktuKedatangan(self):
+    def showTabelWaktuKedatangan(self, filename):
 
-        f = open('waktuKedatangan.txt', mode='w')
+        # f = open('waktuKedatangan.txt', mode='w')
 
-        tableData = []
+        wb = Workbook(write_only=False, read_only=False)
+        ws = wb.active
+        ws.append(['Mobil ke-','LCG Number', 'Angka Uniform', 'Waktu Antar Kedatangan (detik)'])
 
-        for i in range(1, 101) :
-            tableData.append([i, self.x[i], self.U[i], self.data[i]])
+        for i in range(100) :
+            ws.append([i+1, self.x[i], self.U[i], self.data[i]])
 
-        f.write('\n Tabel Waktu antar Kedatangan di Bundaran\n')
-        f.write(tabulate.tabulate(tableData, headers=['Mobil ke-','xi','Ui','Ai(s)'], tablefmt='psql', numalign='center'))
-        f.write('\n Keterangan : \n')
-        f.write('xi : LCG Antar waktu kedatangan\n')
-        f.write('Ui : Uniform number\n')
-        f.write('Ai : Waktu antar kedatangan')
+        for col in ws.columns:
+            max_length = 0
+            column = col[0].column
+            for cell in col:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(cell.value)
+                    cell.alignment = Alignment(horizontal='center')
+                except:
+                    pass
+            adjusted_width = (max_length + 2) * 1.2
+            ws.column_dimensions[column].width = adjusted_width
 
-        f.close()
+        wb.save(filename)
+
+        # f.write('\n Tabel Waktu antar Kedatangan di Bundaran\n')
+        # f.write(tabulate.tabulate(tableData, headers=['Mobil ke-','xi','Ui','Ai(s)'], tablefmt='psql', numalign='center'))
+        # f.write('\n Keterangan : \n')
+        # f.write('xi : LCG Antar waktu kedatangan\n')
+        # f.write('Ui : Uniform number\n')
+        # f.write('Ai : Waktu antar kedatangan')
+        #
+        # f.close()
