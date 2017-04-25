@@ -22,7 +22,7 @@ def saveRataRata(listWaktuAntri, listWaktuSistem):
         adjusted_width = (max_length + 2) * 1.2
         ws.column_dimensions[column].width = adjusted_width
 
-    wb.save('.\Verifikasi\Replikasi_WaktuSistem.xlsx')
+    wb.save('.\Verifikasi\VerifikasiValidasi_WaktuSistem.xlsx')
 
     ##############################################################################
 
@@ -46,4 +46,4 @@ def saveRataRata(listWaktuAntri, listWaktuSistem):
         adjusted_width = (max_length + 2) * 1.2
         ws.column_dimensions[column].width = adjusted_width
 
-    wb.save('.\Verifikasi\Replikasi_WaktuAntri.xlsx')
+    wb.save('.\Verifikasi\VerifikasiValidasi_WaktuAntri.xlsx')
